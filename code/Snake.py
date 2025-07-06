@@ -1,6 +1,6 @@
 import pygame.draw
 from pygame import Vector2
-
+import os
 from code.Const import CELL_SIZE, OFFSET, COLOR_WHITE
 
 
@@ -9,6 +9,8 @@ class Snake:
         self.body = [Vector2(6, 9), Vector2(5, 9), Vector2(4, 9)]
         self.direction = Vector2(1, 0)
         self.add_segment = False
+        self.eat_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'eat.wav'))
+        self.game_over_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'game_over.wav'))
 
     def draw(self, screen):
         for segment in self.body:

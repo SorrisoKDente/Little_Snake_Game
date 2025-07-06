@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, os
 
 from pygame import Surface, Rect
 from pygame.font import Font
@@ -14,6 +14,10 @@ class Menu:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         pygame.display.set_caption('蛇ちゃんゲーム Game Menu')
+        self.option_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'option.wav'))
+        self.select_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'select.wav'))
+        self.menu_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'menu_sound.ogg'))
+        self.menu_sound.play(-1)
 
     def run(self):
         menu_option = 0
@@ -33,19 +37,25 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()  # Close Window
-                    quit()  # end pygame
+                    quit()  # End pygame
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN: #DOWN KEY
                         if menu_option < len(MENU_OPTION) - 1:
                             menu_option += 1
                         else:
                             menu_option = 0
+                        self.option_sound.play()
+
                     if event.key == pygame.K_UP: #UP KEY
                         if menu_option > 0:
                             menu_option -= 1
                         else:
                             menu_option = len(MENU_OPTION) - 1
+                        self.option_sound.play()
+
                     if event.key == pygame.K_RETURN: #ENTER KEY
+                        self.select_sound.play()
+                        self.menu_sound.stop()
                         if menu_option == 0: #Play
                             game = Game()
                             game.run()

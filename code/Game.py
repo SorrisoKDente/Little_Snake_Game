@@ -1,5 +1,4 @@
-import sys
-import pygame
+import sys, pygame, os
 pygame.init()
 
 from code.Const import  FPS, COLOR_BLACK, CELL_SIZE, CELL_NUMBER, SPEED, MOVE_DOWN, \
@@ -14,6 +13,8 @@ class Game:
         self.food = Food(self.snake.body)
         self.state = 'RUNNING'
         self.score = 0
+        self.bg_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'bg_sound.mp3'))
+        self.bg_sound.play(-1)
 
     def draw(self, screen):
         self.food.draw(screen)
@@ -31,6 +32,7 @@ class Game:
             self.food.position = self.food.generate_random_pos(self.snake.body)
             self.snake.add_segment = True
             self.score += 1
+            self.snake.eat_sound.play()
 
     def check_collision_with_edges(self):
         if self.snake.body[0].x == CELL_NUMBER or self.snake.body[0].x == -1:
@@ -43,6 +45,11 @@ class Game:
         self.food.position = self.food.generate_random_pos(self.snake.body)
         self.state = 'STOPPED'
         self.score = 0
+        self.snake.game_over_sound.play()
+        self.bg_sound.stop()
+
+    def game_restart(self):
+        self.bg_sound.play(-1)
 
     def check_collision_with_tail(self):
         headless_body = self.snake.body[1:]
@@ -67,6 +74,7 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if self.state == 'STOPPED':
                         self.state = 'RUNNING'
+                        self.game_restart()
 
                     if event.key == pygame.K_UP and self.snake.direction != MOVE_DOWN:
                         self.snake.direction = MOVE_UP
@@ -85,6 +93,7 @@ class Game:
             score_surface = FONT_SCORE.render(f'SCORE: {str(self.score)}', True, COLOR_WHITE)
             screen.blit(title_surface, (OFFSET - 5, 20))
             screen.blit(score_surface, (OFFSET - 5, OFFSET + CELL_SIZE * CELL_NUMBER + 10))
+
 
             pygame.display.update()
             clock.tick(FPS)
