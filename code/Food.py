@@ -1,18 +1,15 @@
-import random
-
-import pygame
+import random, os, pygame
 from pygame import Vector2
 
 from code.Const import CELL_SIZE, COLOR_D_GREEN, CELL_NUMBER, OFFSET
 
-food_surface = pygame.image.load('../asset/Apple.png')
+food_surface = pygame.image.load(os.path.join(os.path.dirname(__file__), '..', 'asset', 'Apple.png'))
 
 class Food:
     def __init__(self, snake_body):
         self.position = self.generate_random_pos(snake_body)
 
-    def draw(self):
-        from code.Game import screen
+    def draw(self, screen):
         food_rect = pygame.Rect(OFFSET + self.position.x * CELL_SIZE, OFFSET + self.position.y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         screen.blit(food_surface, food_rect)
 

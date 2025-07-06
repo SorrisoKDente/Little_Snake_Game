@@ -1,6 +1,8 @@
-import pygame
+import pygame, os
 from pygame import Vector2
-font_path = '../asset/NotoSansJP.ttf'
+pygame.font.init()
+font_path = os.path.join(os.path.dirname(__file__), '..', 'asset', 'NotoSansJP.ttf')
+
 
 # B
 BORDER_SIZE = 5
@@ -15,11 +17,13 @@ CELL_NUMBER = 20
 
 # F
 FONT_TITLE = pygame.font.Font(font_path, 30)
+FONT_TITLE_MENU = pygame.font.Font(font_path, 45)
+FONT_OPTION = pygame.font.Font(None, 40)
 FONT_SCORE = pygame.font.Font(None, 30)
 FPS = 60
 
 # M
-MENU_OPTION = ('New Game',
+MENU_OPTION = ('Play',
                'Exit')
 
 MOVE_DOWN = Vector2(0, 1)
@@ -35,5 +39,5 @@ SPEED = 100
 
 
 # W
-WIN_WIDTH = 750
-WIN_HEIGHT = 750
+WIN_WIDTH = CELL_SIZE * CELL_NUMBER
+WIN_HEIGHT = CELL_SIZE * CELL_NUMBER

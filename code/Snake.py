@@ -1,7 +1,7 @@
 import pygame.draw
 from pygame import Vector2
 
-from code.Const import CELL_SIZE, COLOR_BLACK, SPEED, OFFSET, COLOR_WHITE
+from code.Const import CELL_SIZE, OFFSET, COLOR_WHITE
 
 
 class Snake:
@@ -10,8 +10,7 @@ class Snake:
         self.direction = Vector2(1, 0)
         self.add_segment = False
 
-    def draw(self):
-        from code.Game import screen
+    def draw(self, screen):
         for segment in self.body:
             segment_rect = (OFFSET + segment.x * CELL_SIZE, OFFSET + segment.y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
             pygame.draw.rect(screen, COLOR_WHITE, segment_rect, 0, 7)

@@ -1,90 +1,63 @@
-import pygame
-import sys
+import pygame, sys
+
+from pygame import Surface, Rect
+from pygame.font import Font
+
+from code.Const import WIN_WIDTH, WIN_HEIGHT, COLOR_BLACK, FONT_TITLE_MENU, COLOR_WHITE, COLOR_GREEN, FONT_OPTION, FPS, \
+    MENU_OPTION
 from code.Game import Game
-from code.Const import WIN_WIDTH, WIN_HEIGHT, FONT_TITLE, COLOR_WHITE
 
-# Função para desenhar o menu
-def draw_menu(screen):
-    # Título centralizado
-    title_surface = FONT_TITLE.render("蛇ちゃんゲーム", True, COLOR_WHITE)
-    title_width, title_height = title_surface.get_size()
-    title_x = (screen.get_width() - title_width) // 2
-    title_y = screen.get_height() // 4  # Coloca o título um pouco abaixo do topo
-    screen.blit(title_surface, (title_x, title_y))
+pygame.init()
 
-    # Opções de menu
-    font = pygame.font.Font(None, 40)
-    play_text = font.render("Play", True, COLOR_WHITE)
-    play_width, play_height = play_text.get_size()
-    play_x = (screen.get_width() - play_width) // 2
-    play_y = title_y + 100  # Distância para a opção Play
-    screen.blit(play_text, (play_x, play_y))
 
-    exit_text = font.render("Exit", True, COLOR_WHITE)
-    exit_width, exit_height = exit_text.get_size()
-    exit_x = (screen.get_width() - exit_width) // 2
-    exit_y = play_y + 60  # Distância para a opção Exit
-    screen.blit(exit_text, (exit_x, exit_y))
+class Menu:
+    def __init__(self):
+        self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+        pygame.display.set_caption('蛇ちゃんゲーム Game Menu')
 
-    pygame.display.update()
+    def run(self):
+        menu_option = 0
+        clock = pygame.time.Clock()
+        while True:
+            title_surface = FONT_TITLE_MENU.render('蛇ちゃんゲーム', True, COLOR_WHITE)
+            title_rect = title_surface.get_rect(center=(WIN_WIDTH // 2, WIN_HEIGHT // 4))
+            self.screen.blit(title_surface, title_rect)
 
-# Função para lidar com a navegação do menu
-def menu_loop():
-    pygame.init()
-    screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-    pygame.display.set_caption('Menu - 蛇ちゃんゲーム🐍')
+            for i in range(len(MENU_OPTION)):
+                if i == menu_option:
+                    self.menu_text(40, MENU_OPTION[i], COLOR_GREEN, (WIN_WIDTH // 2, WIN_HEIGHT // 2 + i * 60))
+                else:
+                    self.menu_text(40, MENU_OPTION[i], COLOR_WHITE, (WIN_WIDTH // 2, WIN_HEIGHT // 2 + i * 60))
+            pygame.display.flip()
 
-    clock = pygame.time.Clock()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()  # Close Window
+                    quit()  # end pygame
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN: #DOWN KEY
+                        if menu_option < len(MENU_OPTION) - 1:
+                            menu_option += 1
+                        else:
+                            menu_option = 0
+                    if event.key == pygame.K_UP: #UP KEY
+                        if menu_option > 0:
+                            menu_option -= 1
+                        else:
+                            menu_option = len(MENU_OPTION) - 1
+                    if event.key == pygame.K_RETURN: #ENTER KEY
+                        if menu_option == 0: #Play
+                            game = Game()
+                            game.run()
+                        else:  # Exit
+                            pygame.quit()
+                            sys.exit()
 
-    menu_active = True
-    while menu_active:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+            clock.tick(FPS)
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:  # Play
-                    game = Game()  # Chama a classe do jogo
-                    game_loop(game, screen)
-                    menu_active = False
 
-                elif event.key == pygame.K_ESCAPE:  # Exit
-                    pygame.quit()
-                    sys.exit()
-
-        # Desenhar o menu
-        screen.fill((0, 0, 0))  # Fundo preto
-        draw_menu(screen)
-
-        clock.tick(60)
-
-# Função para rodar o jogo
-def game_loop(game, screen):
-    clock = pygame.time.Clock()
-    game_running = True
-
-    while game_running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP and game.snake.direction != game.MOVE_DOWN:
-                    game.snake.direction = game.MOVE_UP
-                elif event.key == pygame.K_DOWN and game.snake.direction != game.MOVE_UP:
-                    game.snake.direction = game.MOVE_DOWN
-                elif event.key == pygame.K_LEFT and game.snake.direction != game.MOVE_RIGHT:
-                    game.snake.direction = game.MOVE_LEFT
-                elif event.key == pygame.K_RIGHT and game.snake.direction != game.MOVE_LEFT:
-                    game.snake.direction = game.MOVE_RIGHT
-
-        game.update()
-
-        # Desenhar o jogo
-        screen.fill((0, 0, 0))
-        game.draw()
-        pygame.display.update()
-        clock.tick(60)
-
+    def menu_text(self, text_size: int, text: str, text_color: tuple, text_center_pos: tuple):
+        text_font: Font = pygame.font.SysFont(name="Lucida Sans Typewriter", size=text_size)
+        text_surf: Surface = text_font.render(text, True, text_color).convert_alpha()
+        text_rect: Rect = text_surf.get_rect(center=text_center_pos)
+        self.screen.blit(source=text_surf, dest=text_rect)

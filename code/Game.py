@@ -1,14 +1,11 @@
 import sys
-
 import pygame
-from pygame import Vector2
 pygame.init()
 
-from code.Const import WIN_WIDTH, WIN_HEIGHT, FPS, COLOR_GREEN, COLOR_BLACK, CELL_SIZE, CELL_NUMBER, SPEED, MOVE_DOWN, \
+from code.Const import  FPS, COLOR_BLACK, CELL_SIZE, CELL_NUMBER, SPEED, MOVE_DOWN, \
     MOVE_UP, MOVE_RIGHT, MOVE_LEFT, OFFSET, BORDER_SIZE, FONT_TITLE, COLOR_WHITE, FONT_SCORE
 from code.Food import Food
 from code.Snake import Snake
-
 
 
 class Game:
@@ -18,9 +15,9 @@ class Game:
         self.state = 'RUNNING'
         self.score = 0
 
-    def draw(self):
-        self.food.draw()
-        self.snake.draw()
+    def draw(self, screen):
+        self.food.draw(screen)
+        self.snake.draw(screen)
 
     def update(self):
         if self.state == 'RUNNING':
@@ -52,46 +49,42 @@ class Game:
         if self.snake.body[0] in headless_body:
             self.game_over()
 
-screen = pygame.display.set_mode((2* OFFSET + CELL_SIZE * CELL_NUMBER , 2* OFFSET + CELL_SIZE * CELL_NUMBER))
+    def run(self):
+        screen = pygame.display.set_mode((2* OFFSET + CELL_SIZE * CELL_NUMBER , 2* OFFSET + CELL_SIZE * CELL_NUMBER))
+        pygame.display.set_caption('蛇ちゃんゲーム🐍')
+        clock = pygame.time.Clock()
 
-pygame.display.set_caption('蛇ちゃんゲーム🐍')
+        SNAKE_UPDATE = pygame.USEREVENT
+        pygame.time.set_timer(SNAKE_UPDATE, SPEED)
 
-clock = pygame.time.Clock()
+        while True:
+            for event in pygame.event.get():
+                if event.type == SNAKE_UPDATE:
+                    self.update()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if self.state == 'STOPPED':
+                        self.state = 'RUNNING'
 
-game = Game()
+                    if event.key == pygame.K_UP and self.snake.direction != MOVE_DOWN:
+                        self.snake.direction = MOVE_UP
+                    if event.key == pygame.K_DOWN and self.snake.direction != MOVE_UP:
+                        self.snake.direction = MOVE_DOWN
+                    if event.key == pygame.K_LEFT and self.snake.direction != MOVE_RIGHT:
+                        self.snake.direction = MOVE_LEFT
+                    if event.key == pygame.K_RIGHT and self.snake.direction != MOVE_LEFT:
+                        self.snake.direction = MOVE_RIGHT
 
-SNAKE_UPDATE = pygame.USEREVENT
-pygame.time.set_timer(SNAKE_UPDATE, SPEED)
+            # drawing
+            screen.fill(COLOR_BLACK)
+            pygame.draw.rect(screen, COLOR_WHITE, (OFFSET - BORDER_SIZE, OFFSET - BORDER_SIZE, CELL_SIZE * CELL_NUMBER + 10, CELL_SIZE * CELL_NUMBER + 10), BORDER_SIZE)
+            self.draw(screen)
+            title_surface = FONT_TITLE.render('蛇ちゃんゲーム', True, COLOR_WHITE)
+            score_surface = FONT_SCORE.render(f'SCORE: {str(self.score)}', True, COLOR_WHITE)
+            screen.blit(title_surface, (OFFSET - 5, 20))
+            screen.blit(score_surface, (OFFSET - 5, OFFSET + CELL_SIZE * CELL_NUMBER + 10))
 
-while True:
-    for event in pygame.event.get():
-        if event.type == SNAKE_UPDATE:
-            game.update()
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if game.state == 'STOPPED':
-                game.state = 'RUNNING'
-
-            if event.key == pygame.K_UP and game.snake.direction != MOVE_DOWN:
-                game.snake.direction = MOVE_UP
-            if event.key == pygame.K_DOWN and game.snake.direction != MOVE_UP:
-                game.snake.direction = MOVE_DOWN
-            if event.key == pygame.K_LEFT and game.snake.direction != MOVE_RIGHT:
-                game.snake.direction = MOVE_LEFT
-            if event.key == pygame.K_RIGHT and game.snake.direction != MOVE_LEFT:
-                game.snake.direction = MOVE_RIGHT
-
-    # drawing
-    screen.fill(COLOR_BLACK)
-    pygame.draw.rect(screen, COLOR_WHITE, (OFFSET - BORDER_SIZE, OFFSET - BORDER_SIZE, CELL_SIZE * CELL_NUMBER + 10, CELL_SIZE * CELL_NUMBER + 10), BORDER_SIZE)
-    game.draw()
-    title_surface = FONT_TITLE.render('蛇ちゃんゲーム', True, COLOR_WHITE)
-    score_surface = FONT_SCORE.render(f'SCORE: {str(game.score)}', True, COLOR_WHITE)
-    screen.blit(title_surface, (OFFSET - 5, 20))
-    screen.blit(score_surface, (OFFSET - 5, OFFSET + CELL_SIZE * CELL_NUMBER + 10))
-
-    pygame.display.update()
-    clock.tick(FPS)
-
+            pygame.display.update()
+            clock.tick(FPS)
