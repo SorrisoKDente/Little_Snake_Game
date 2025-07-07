@@ -1,4 +1,7 @@
 import sys, pygame, os
+
+from code.Score import save_score
+
 pygame.init()
 
 from code.Const import  FPS, COLOR_BLACK, CELL_SIZE, CELL_NUMBER, SPEED, MOVE_DOWN, \
@@ -19,6 +22,9 @@ class Game:
     def draw(self, screen):
         self.food.draw(screen)
         self.snake.draw(screen)
+
+        score_surface = FONT_SCORE.render(f'SCORE: {str(self.score)}', True, COLOR_WHITE)
+        screen.blit(score_surface, (OFFSET - 5, OFFSET + CELL_SIZE * CELL_NUMBER + 10))
 
     def update(self):
         if self.state == 'RUNNING':
@@ -41,6 +47,8 @@ class Game:
             self.game_over()
 
     def game_over(self):
+        save_score(self.score)
+
         self.snake.reset()
         self.food.position = self.food.generate_random_pos(self.snake.body)
         self.state = 'STOPPED'

@@ -24,6 +24,7 @@ FPS = 60
 
 # M
 MENU_OPTION = ('Play',
+               'Score',
                'Exit')
 
 MOVE_DOWN = Vector2(0, 1)
