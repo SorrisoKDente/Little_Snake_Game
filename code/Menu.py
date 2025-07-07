@@ -66,7 +66,7 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()  # Close Window
-                    quit()  # End pygame
+                    sys.exit()  # End pygame
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN: #DOWN KEY
                         if menu_option < len(MENU_OPTION) - 1:
@@ -94,7 +94,7 @@ class Menu:
                                 for events in pygame.event.get():
                                     if events.type == pygame.QUIT:
                                         pygame.quit()
-                                        quit()
+                                        sys.exit()
                                     if events.type == pygame.KEYDOWN:
                                         if events.key == pygame.K_RETURN:
                                             self.screen.fill(COLOR_BLACK)
