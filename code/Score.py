@@ -1,6 +1,13 @@
 import os, json
 
-score_file_path = os.path.join(os.path.dirname(__file__), '..', 'asset', 'scores.json')
+from pathlib import Path
+
+def get_score_path():
+    docs_dir = Path.home() / 'Documents' / 'Little Snake Game'
+    docs_dir.mkdir(exist_ok=True)
+    return docs_dir / 'scores.json'
+
+score_file_path = get_score_path()
 
 def save_score(score):
     scores = load_scores()
