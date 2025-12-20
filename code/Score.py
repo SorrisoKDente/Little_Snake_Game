@@ -3,13 +3,9 @@ import os, json
 from pathlib import Path
 
 def get_score_path():
-    # Define o caminho para a pasta atual onde o script está rodando
-    base_dir = Path(__file__).parent.absolute()
-    
-    # Define o arquivo score.json dentro dessa mesma pasta
-    score_file = base_dir / 'scores.json'
-    
-    return score_file
+    docs_dir = Path.home() / '.little_snake_game'
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    return docs_dir / 'scores.json'
 
 score_file_path = get_score_path()
 
@@ -25,13 +21,10 @@ def save_score(score):
     with open(score_file_path, 'w') as f:
         json.dump(scores, f)
 
+
 def load_scores():
     if os.path.exists(score_file_path):
-        try:
-            with open(score_file_path, 'r') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, ValueError):
-            # Se o arquivo estiver vazio ou corrompido, retorna lista vazia
-            return []
+        with open(score_file_path, 'r') as f:
+            return json.load(f)
     else:
         return []
