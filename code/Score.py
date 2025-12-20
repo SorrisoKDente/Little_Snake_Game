@@ -3,8 +3,8 @@ import os, json
 from pathlib import Path
 
 def get_score_path():
-    docs_dir = Path.home() / 'Documents' / 'Little Snake Game'
-    docs_dir.mkdir(exist_ok=True)
+    docs_dir = Path.home() / '.little_snake_game'
+    docs_dir.mkdir(parents=True, exist_ok=True)
     return docs_dir / 'scores.json'
 
 score_file_path = get_score_path()

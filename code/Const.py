@@ -35,6 +35,11 @@ MOVE_UP = Vector2(0, -1)
 # O
 OFFSET = 75
 
+#
+PAUSE_OPTION = ('Resume',
+                'Back to Menu',
+                'Quit Game')
+
 # S
 SPEED = 100
 
