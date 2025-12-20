@@ -9,6 +9,7 @@ from code.Game import Game
 from code.Score import load_scores
 
 pygame.init()
+pygame.mixer.init()
 
 
 class Menu:

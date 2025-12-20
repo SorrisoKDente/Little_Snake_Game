@@ -3,6 +3,7 @@ import sys, pygame, os
 from code.Score import save_score
 
 pygame.init()
+pygame.mixer.init()
 
 from code.Const import FPS, COLOR_BLACK, CELL_SIZE, CELL_NUMBER, SPEED, MOVE_DOWN, \
     MOVE_UP, MOVE_RIGHT, MOVE_LEFT, OFFSET, BORDER_SIZE, FONT_TITLE, COLOR_WHITE, FONT_SCORE, \
@@ -146,21 +147,20 @@ class Game:
         pygame.display.set_caption('蛇ちゃんゲーム🐍')
         clock = pygame.time.Clock()
 
-        SNAKE_UPDATE = pygame.USEREVENT
-        pygame.time.set_timer(SNAKE_UPDATE, SPEED)
+        snake_update = pygame.USEREVENT
+        pygame.time.set_timer(snake_update, SPEED)
 
         # Estados adicionais para controle do menu
         in_pause_menu = False
         in_confirmation = False
         confirmation_type = ""
-        confirmation_message = ""
         confirmation_callback = None
         confirmation_selection = 0  # 0 = NO, 1 = YES
         should_exit_to_menu = False
 
         while True:
             for event in pygame.event.get():
-                if event.type == SNAKE_UPDATE:
+                if event.type == snake_update:
                     if not in_pause_menu and not in_confirmation:
                         self.update()
                 if event.type == pygame.QUIT:
