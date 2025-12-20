@@ -25,8 +25,6 @@ def save_score(score):
     with open(score_file_path, 'w') as f:
         json.dump(scores, f)
 
-
-def load_scores():
 def load_scores():
     if os.path.exists(score_file_path):
         try:
