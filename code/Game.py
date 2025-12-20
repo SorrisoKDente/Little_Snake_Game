@@ -62,13 +62,23 @@ class Game:
         self.food = Food(self.snake.body)
         self.state = 'RUNNING'
         self.score = 0
-        self.bg_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'bg_sound.mp3'))
-        self.bg_sound.play(-1)
+
+        try:
+            self.bg_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'bg_sound.mp3'))
+            self.pause_selection_sound = pygame.mixer.Sound(
+                os.path.join(os.path.dirname(__file__), '..', 'asset', 'option.wav'))
+            self.confirm_sound = pygame.mixer.Sound(
+                os.path.join(os.path.dirname(__file__), '..', 'asset', 'select.wav'))
+            if self.bg_sound: self.bg_sound.play(-1)
+        except pygame.error:
+            print("Aviso: Áudio do jogo indisponível.")
+            self.bg_sound = None
+            self.pause_selection_sound = None
+            self.confirm_sound = None
+
         # Adicione essas variáveis para controle do menu de pausa
         self.pause_menu_option = 0
-        self.pause_selection_sound = pygame.mixer.Sound(
-            os.path.join(os.path.dirname(__file__), '..', 'asset', 'option.wav'))
-        self.confirm_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'select.wav'))
+
         # Callback para retornar ao menu
         self.return_to_menu_callback = return_to_menu_callback
 
@@ -168,7 +178,7 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_p or event.key == pygame.K_SPACE:
                         if not in_confirmation:
                             in_pause_menu = not in_pause_menu
                             self.pause_selection_sound.play()

@@ -16,9 +16,16 @@ class Menu:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         pygame.display.set_caption('蛇ちゃんゲーム Game Menu')
-        self.option_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'option.wav'))
-        self.select_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'select.wav'))
-        self.menu_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'menu_sound.ogg'))
+        try:
+            self.option_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'option.wav'))
+            self.select_sound = pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), '..', 'asset', 'select.wav'))
+            self.menu_sound = pygame.mixer.Sound(
+                os.path.join(os.path.dirname(__file__), '..', 'asset', 'menu_sound.ogg'))
+        except pygame.error:
+            print("Warning: failed to load sounds (Mixer not started).")
+            self.option_sound = None
+            self.select_sound = None
+            self.menu_sound = None
 
         # Variáveis para controle de confirmação
         self.in_confirmation = False
@@ -30,7 +37,7 @@ class Menu:
 
     def start_menu_sound(self):
         """Inicia o som do menu"""
-        if not self.menu_sound.get_num_channels():
+        if self.menu_sound and not self.menu_sound.get_num_channels():
             self.menu_sound.play(-1)
 
     def show_scores(self):
